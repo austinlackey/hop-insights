@@ -1,0 +1,32 @@
+```{r}
+library(tidyverse)
+library(ggradar)
+library(scales)
+library(fmsb)
+rawData <- read_csv("hop_data.csv")
+```
+
+
+```{r}
+print(names(rawData))
+```
+
+```{r}
+# fill na values with 0
+rawData[is.na(rawData)] <- 0
+subsetData <- head(rawData, 300)
+
+# subsetData <- select(subsetData, hop_name, alpha_acid_avg, myrcene_avg, humulene_avg, caryophyllene_avg, farnesene_avg, cohumulone_avg)
+print(subsetData)
+```
+
+
+```{r}
+subsetData %>% 
+  mutate_each(funs(rescale), -hop_name) %>%
+  ggradar(plot.legend = FALSE)
+```
+
+```{r}
+radarchart(subsetData)
+```

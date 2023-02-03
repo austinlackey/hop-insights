@@ -14,9 +14,9 @@ print(names(rawData))
 ```{r}
 # fill na values with 0
 rawData[is.na(rawData)] <- 0
-subsetData <- head(rawData, 300)
+subsetData <- head(rawData, 20)
 
-# subsetData <- select(subsetData, hop_name, alpha_acid_avg, myrcene_avg, humulene_avg, caryophyllene_avg, farnesene_avg, cohumulone_avg)
+subsetData <- select(subsetData, hop_name, alpha_acid_avg, beta_acid_max, myrcene_avg, humulene_avg, caryophyllene_avg, farnesene_avg, cohumulone_avg)
 print(subsetData)
 ```
 
@@ -24,9 +24,33 @@ print(subsetData)
 ```{r}
 subsetData %>% 
   mutate_each(funs(rescale), -hop_name) %>%
-  ggradar(plot.legend = FALSE)
+  ggradar(plot.legend = TRUE)
 ```
 
 ```{r}
 radarchart(subsetData)
+```
+
+```{r}
+# get the row that contains "citra" and "astra" in hop_name
+citra <- rawData[rawData$hop_name == "Citra Hop",]
+citra <- select(citra, hop_name, alpha_acid_avg, beta_acid_max, myrcene_avg, humulene_avg, caryophyllene_avg, farnesene_avg, cohumulone_avg)
+citra %>% 
+  mutate_each(funs(rescale), -hop_name) %>%
+  ggradar(plot.legend = TRUE)
+```
+
+```{r}
+# Bar plot of the hop attributes
+citra %>% 
+  gather(key = "attribute", value = "value", -hop_name) %>%
+  ggplot(aes(x = hop_name, y = value, fill = attribute)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal() +
+  theme()
+```
+
+```{r}
 ```
